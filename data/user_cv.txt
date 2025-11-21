@@ -1,0 +1,53 @@
+FAIZ RAHMAN  
+Email: faizrahman@example.com  
+Phone: +62-812-3456-7890  
+Location: Jakarta, Indonesia  
+LinkedIn: linkedin.com/in/faizrahman  
+GitHub: github.com/faizrahman  
+
+SUMMARY  
+Data enthusiast with strong analytical skills and hands-on experience in Python, SQL, and machine learning. Highly interested in Data Science, Predictive Modeling, and building end-to-end data pipelines. Experience working with business analytics and dashboard creation. Fast learner with strong problem-solving skills.
+
+SKILLS  
+Programming: Python, SQL, R  
+Libraries & Tools: Pandas, NumPy, Scikit-learn, Matplotlib, TensorFlow, Tableau, Power BI  
+Databases: MySQL, PostgreSQL  
+Cloud & Engineering Tools: AWS, Docker, Airflow  
+Other: Data Visualization, Machine Learning, Statistics, ETL Pipelines
+
+WORK EXPERIENCE  
+Data Analyst Intern — PT Digital Nusantara (2023)  
+- Cleaned, transformed, and analyzed large datasets using Python and SQL.  
+- Built interactive dashboards using Tableau to monitor customer engagement.  
+- Collaborated with Data Engineering team to validate ETL outputs and ensure data accuracy.  
+- Performed exploratory data analysis (EDA) to identify trends and insights.
+
+Machine Learning Intern — AI Labs Indonesia (2022)  
+- Assisted in developing machine learning models using Scikit-learn and TensorFlow.  
+- Conducted data preprocessing and feature engineering for classification tasks.  
+- Helped optimize model performance using cross-validation and hyperparameter tuning.  
+- Documented model pipelines and performance metrics.
+
+PROJECTS  
+Customer Churn Prediction  
+- Developed a machine learning model to predict customer churn using Python and Scikit-learn.  
+- Performed feature selection, model evaluation, and visualization of results.  
+- Achieved 87% accuracy using Random Forest.
+
+Sales Dashboard Automation  
+- Built an automated Tableau dashboard integrating SQL queries for real-time updates.  
+- Visualized sales trends, revenue breakdown, and KPIs for management reporting.
+
+Movie Recommendation System  
+- Implemented a collaborative filtering model using Python.  
+- Processed dataset of 100k ratings and optimized recommendation performance.
+
+EDUCATION  
+B.Sc. in Computer Science — Universitas Indonesia (2021–Present)  
+Relevant Coursework: Machine Learning, Database Systems, Data Mining, Statistics, Algorithms.
+
+CERTIFICATIONS  
+- Google Data Analytics Professional Certificate  
+- AWS Cloud Practitioner  
+- IBM Machine Learning with Python
+

@@ -5,13 +5,13 @@ import scorer
 
 def main():
     # Step 1: INPUT HANDLING
-    cv_text = input_handler.load_cv("data/cv_user.pdf")  # bisa diganti ke docx/txt
-    interview_answers = input_handler.load_interview_answers("data/jawaban_user.csv")
+    cv_text = input_handler.load_cv("data/user_cv.txt")  # bisa diganti ke docx/txt
+    # interview_answers = input_handler.load_interview_answers("data/jawaban_user.csv")
     rubric = scorer.load_rubric("data/rubrik_penilaian.json")
 
     # Step 2: PREPROCESSING
     processed_cv = prepocessing.clean_text(cv_text)
-    processed_answers = [prepocessing.clean_text(j) for j in interview_answers]
+    # processed_answers = [prepocessing.clean_text(j) for j in interview_answers]
 
     # Step 3: EXTRACTION
     entities = extraction.extract_entities(processed_cv)
