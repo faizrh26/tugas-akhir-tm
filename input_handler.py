@@ -21,7 +21,7 @@ def load_pdf(file_path):
     with open(file_path, 'rb') as f:
         reader = PyPDF2.PdfReader(f)
         for page in reader.pages:
-            text += page.extract_text()
+            text += page.extract_text() or ""
     return text
 
 def load_interview_answers(file_path):
