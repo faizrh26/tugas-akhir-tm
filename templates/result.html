@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CV Role Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Hasil Analisis CV</h1>
+
+    <p><strong>File:</strong> {{ filename }}</p>
+
+    <h2>Rekomendasi Role Terbaik:</h2>
+    <p class="best-role">{{ best_role.upper() }}</p>
+
+    <h3>Skor Persentase</h3>
+    <ul>
+        {% for role, pct in score["percent"].items() %}
+            <li><strong>{{ role }}</strong>: {{ pct }}%</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Raw Score</h3>
+    <ul>
+        {% for role, val in score["raw_scores"].items() %}
+            <li><strong>{{ role }}</strong>: {{ val }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Top Keywords (TF-IDF)</h3>
+    <p>
+        {% for kw in keywords %}
+            <span class="badge">{{ kw }}</span>
+        {% endfor %}
+    </p>
+
+    <h3>Entities (NER)</h3>
+    {% for label, ents in entities.items() %}
+        <p><strong>{{ label }}</strong>:
+            {% for e in ents %}
+                <span class="badge badge-entity">{{ e }}</span>
+            {% endfor %}
+        </p>
+    {% endfor %}
+
+    <a href="{{ url_for('index') }}" class="back-link">⬅ Kembali upload CV lain</a>
+</div>
+</body>
+</html>

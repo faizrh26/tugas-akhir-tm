@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CV Role Matcher</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>CV Role Matcher</h1>
+    <p>Upload CV kamu untuk melihat kecocokan dengan Data Analyst, Data Scientist, dan Data Engineer.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <label for="cvfile">Pilih file CV (.pdf, .docx, .txt):</label><br>
+        <input type="file" id="cvfile" name="cvfile" required><br><br>
+        <button type="submit">Proses CV</button>
+    </form>
+</div>
+</body>
+</html>
