@@ -35,14 +35,57 @@
         {% endfor %}
     </p>
 
-    <h3>Entities (NER)</h3>
-    {% for label, ents in entities.items() %}
-        <p><strong>{{ label }}</strong>:
-            {% for e in ents %}
-                <span class="badge badge-entity">{{ e }}</span>
-            {% endfor %}
-        </p>
+    <h3>Profil Kandidat (hasil ekstraksi)</h3>
+
+    <p><strong>Skills terdeteksi:</strong></p>
+    <p>
+    {% for s in profile.skills %}
+        <span class="badge">{{ s }}</span>
+    {% else %}
+        <em>Tidak ada skill spesifik yang terdeteksi.</em>
     {% endfor %}
+    </p>
+
+    <p><strong>Tools terdeteksi:</strong></p>
+    <p>
+    {% for t in profile.tools %}
+        <span class="badge">{{ t }}</span>
+    {% else %}
+        <em>Tidak ada tools spesifik yang terdeteksi.</em>
+    {% endfor %}
+    </p>
+
+    <p><strong>Projects terdeteksi:</strong></p>
+    <p>
+    {% for p in profile.projects %}
+        <span class="badge">{{ p }}</span>
+    {% else %}
+        <em>Tidak ada kata kunci project yang terdeteksi.</em>
+    {% endfor %}
+    </p>
+
+    <p><strong>Sertifikasi terdeteksi:</strong></p>
+    <p>
+    {% for c in profile.certifications %}
+        <span class="badge">{{ c }}</span>
+    {% else %}
+        <em>Tidak ada sertifikasi yang terdeteksi.</em>
+    {% endfor %}
+    </p>
+
+    <p><strong>Perkiraan pengalaman:</strong>
+    {{ profile.experience_years }} tahun
+    </p>
+
+    <p><strong>Pendidikan:</strong>
+    {{ profile.education_level }}
+    {% if profile.education_majors %}
+        —
+        {% for m in profile.education_majors %}
+        <span class="badge">{{ m }}</span>
+        {% endfor %}
+    {% endif %}
+    </p>
 
     <a href="{{ url_for('index') }}" class="back-link">⬅ Kembali upload CV lain</a>
 </div>

@@ -45,20 +45,17 @@ def index():
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(filepath)
 
-        # Jalankan pipeline proses CV
-        result = process_cv(filepath)
+    # app.py (di dalam if request.method == "POST")
+    result = process_cv(filepath)
 
-        # Kirim hasil ke template result.html
-        return render_template(
-            "result.html",
-            best_role=result["best_role"],
-            score=result["score_result"],
-            keywords=result["keywords"],
-            entities=result["entities"],
-            filename=filename,
-        )
-
-    return render_template("index.html")
+    return render_template(
+        "result.html",
+        best_role=result["best_role"],
+        score=result["score_result"],
+        keywords=result["keywords"],
+        profile=result["profile"],   # ⬅ ini yang penting
+        filename=filename,
+    )
 
 
 if __name__ == "__main__":
