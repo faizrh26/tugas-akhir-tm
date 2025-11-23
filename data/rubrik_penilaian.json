@@ -1,34 +1,238 @@
 {
-    "data_scientist": {
-        "machine learning": 5,
-        "statistics": 4,
-        "python": 5,
-        "deep learning": 5,
-        "nlp": 4,
-        "pandas": 3,
-        "mathematics": 3,
-        "research": 2
+  "data_analyst": {
+    "weights": {
+      "skills_must": 0.40,
+      "skills_nice": 0.20,
+      "experience": 0.20,
+      "education": 0.10,
+      "signals": 0.10
     },
-    "data_analyst": {
-        "excel": 5,
-        "sql": 5,
-        "dashboard": 4,
-        "tableau": 4,
-        "power bi": 4,
-        "visualization": 5,
-        "reporting": 3,
-        "analytics": 3
+    "skills": {
+      "must": [
+        "sql",
+        "excel",
+        "data analysis",
+        "data visualization",
+        "reporting"
+      ],
+      "nice": [
+        "python",
+        "statistics",
+        "business analysis",
+        "communication",
+        "critical thinking"
+      ]
     },
-    "data_engineer": {
-        "etl": 5,
-        "pipelines": 4,
-        "airflow": 4,
-        "big data": 5,
-        "hadoop": 4,
-        "spark": 5,
-        "aws": 4,
-        "gcp": 4,
-        "kubernetes": 3,
-        "docker": 4
+    "tools": {
+      "core": [
+        "tableau",
+        "power bi",
+        "looker",
+        "metabase"
+      ],
+      "optional": [
+        "mysql",
+        "postgresql",
+        "bigquery",
+        "google sheets"
+      ]
+    },
+    "experience": {
+      "min_years": 0,
+      "pref_years": 1,
+      "roles": [
+        "data analyst",
+        "business intelligence",
+        "reporting analyst",
+        "business analyst"
+      ]
+    },
+    "education": {
+      "preferred_majors": [
+        "statistics",
+        "mathematics",
+        "informatics",
+        "computer science",
+        "information systems",
+        "industrial engineering"
+      ],
+      "optional_majors": [
+        "economics",
+        "accounting",
+        "management"
+      ],
+      "min_level": "S1"
+    },
+    "signals": {
+      "projects": [
+        "dashboard",
+        "sales analysis",
+        "customer analysis",
+        "forecasting",
+        "business reporting"
+      ],
+      "certifications": [
+        "data analytics",
+        "tableau",
+        "power bi",
+        "excel certification"
+      ]
     }
+  },
+
+  "data_scientist": {
+    "weights": {
+      "skills_must": 0.40,
+      "skills_nice": 0.20,
+      "experience": 0.20,
+      "education": 0.10,
+      "signals": 0.10
+    },
+    "skills": {
+      "must": [
+        "python",
+        "machine learning",
+        "statistics",
+        "modeling"
+      ],
+      "nice": [
+        "deep learning",
+        "probability",
+        "sql",
+        "data mining",
+        "experiment design"
+      ]
+    },
+    "tools": {
+      "core": [
+        "scikit-learn",
+        "tensorflow",
+        "pytorch",
+        "numpy",
+        "pandas"
+      ],
+      "optional": [
+        "matplotlib",
+        "seaborn",
+        "xgboost",
+        "lightgbm"
+      ]
+    },
+    "experience": {
+      "min_years": 0,
+      "pref_years": 1,
+      "roles": [
+        "data scientist",
+        "ml engineer",
+        "ai engineer",
+        "research scientist"
+      ]
+    },
+    "education": {
+      "preferred_majors": [
+        "computer science",
+        "informatics",
+        "statistics",
+        "data science",
+        "mathematics"
+      ],
+      "optional_majors": [
+        "industrial engineering",
+        "electrical engineering"
+      ],
+      "min_level": "S1"
+    },
+    "signals": {
+      "projects": [
+        "classification",
+        "regression",
+        "clustering",
+        "prediction",
+        "recommendation",
+        "time series"
+      ],
+      "certifications": [
+        "machine learning",
+        "deep learning",
+        "ai",
+        "data science"
+      ]
+    }
+  },
+
+  "data_engineer": {
+    "weights": {
+      "skills_must": 0.40,
+      "skills_nice": 0.20,
+      "experience": 0.20,
+      "education": 0.10,
+      "signals": 0.10
+    },
+    "skills": {
+      "must": [
+        "sql",
+        "etl",
+        "data pipeline",
+        "data wareferencing"
+      ],
+      "nice": [
+        "python",
+        "big data",
+        "distributed systems",
+        "batch processing",
+        "stream processing"
+      ]
+    },
+    "tools": {
+      "core": [
+        "airflow",
+        "spark",
+        "hadoop",
+        "hive"
+      ],
+      "optional": [
+        "prefect",
+        "luigi",
+        "bigquery",
+        "snowflake",
+        "redshift",
+        "kafka"
+      ]
+    },
+    "experience": {
+      "min_years": 0,
+      "pref_years": 1,
+      "roles": [
+        "data engineer",
+        "etl engineer",
+        "data platform engineer"
+      ]
+    },
+    "education": {
+      "preferred_majors": [
+        "computer science",
+        "informatics",
+        "information systems"
+      ],
+      "optional_majors": [
+        "electrical engineering",
+        "industrial engineering"
+      ],
+      "min_level": "S1"
+    },
+    "signals": {
+      "projects": [
+        "etl pipeline",
+        "data pipeline",
+        "data warehouse",
+        "data lake",
+        "stream processing"
+      ],
+      "certifications": [
+        "aws data",
+        "gcp data engineer",
+        "azure data engineer"
+      ]
+    }
+  }
 }

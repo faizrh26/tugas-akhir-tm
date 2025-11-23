@@ -1,36 +1,44 @@
-# pipeline.py
-
 import input_handler
 import prepocessing
 import extraction
 import scorer
 
-Rubrik_penilaian = "data/rubrik_penilaian.json"
+RUBRIC_PATH = "data/rubrik_penilaian.json" 
 
 
-def process_cv(file_path):
-
-    # 1. LOAD CV
+def process_cv(file_path: str):
+    # Load CV
     cv_text = input_handler.load_cv(file_path)
 
-    # 2. PREPROCESSING
+    # Preprocessing
     cleaned_text = prepocessing.clean_text(cv_text)
 
-    # 3. EXTRACTION
-    entities = extraction.extract_entities(cv_text)       # NER
-    keywords = extraction.extract_keywords(cleaned_text)  # TF-IDF
+    # Load rubric
+    rubric = scorer.load_rubric(RUBRIC_PATH)
 
-    # 4. SCORING
-    rubric = scorer.load_rubric(Rubrik_penilaian)
-    score_result = scorer.score_candidate(keywords, entities, rubric)
+    # Build candidate profile
+    profile = extraction.build_profile(cv_text, cleaned_text, rubric)
+
+    # Scoring
+    score_result = scorer.score_candidate(profile, rubric)
     best_role = scorer.recommend_role(score_result)
 
-    # 5. Return full detail
+    # Optional: keywords for UI / debugging
+    keywords = extraction.extract_keywords(cleaned_text)
+
     return {
         "best_role": best_role,
         "score_result": score_result,
-        "entities": entities,
+        "profile": profile,
         "keywords": keywords,
         "raw_text": cv_text,
-        "cleaned_text": cleaned_text
+        "cleaned_text": cleaned_text,
     }
+
+
+if __name__ == "__main__":
+    # contoh manual
+    result = process_cv("data/user_cv.txt")
+    print("===== BEST ROLE =====")
+    print(result["best_role"])
+    print("Scores:", result["score_result"])
