@@ -6,9 +6,8 @@ from werkzeug.utils import secure_filename
 
 from pipeline import process_cv  
 
-# --- Konfigurasi dasar Flask ---
 app = Flask(__name__)
-app.secret_key = "dev-secret-key"  # bebas, hanya untuk flash message
+app.secret_key = "dev-secret-key"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
@@ -22,7 +21,6 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# --- Route utama: halaman upload ---
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -45,19 +43,21 @@ def index():
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(filepath)
 
-    # app.py (di dalam if request.method == "POST")
-    result = process_cv(filepath)
+        # ==== PROSES CV DI SINI (HARUS DI DALAM POST) ====
+        result = process_cv(filepath)
 
-    return render_template(
-        "result.html",
-        best_role=result["best_role"],
-        score=result["score_result"],
-        keywords=result["keywords"],
-        profile=result["profile"],   # ⬅ ini yang penting
-        filename=filename,
-    )
+        return render_template(
+            "result.html",
+            best_role=result["best_role"],
+            score=result["score_result"],
+            keywords=result["keywords"],
+            profile=result["profile"],
+            filename=filename,
+        )
+
+    # ==== GET REQUEST → halaman upload ====
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
-    # Jalanin langsung: python app.py
     app.run(debug=True)
