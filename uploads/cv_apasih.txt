@@ -1,0 +1,78 @@
+FAIZ RAHMAN
+Jakarta, Indonesia
+Phone: +62-812-3456-7890
+Email: faizrahman@example.com
+
+LinkedIn: linkedin.com/in/faizrahman
+GitHub: github.com/faizrahman
+
+PROFESSIONAL SUMMARY
+
+Data Engineer with hands-on experience designing and optimizing data pipelines, ETL workflows, data warehousing, and distributed data processing. Skilled in building scalable data architectures using SQL, Airflow, Docker, AWS, and modern data tools. Strong in automation, pipeline orchestration, and ensuring data reliability and integrity. Passionate about building robust backend data systems to support analytics and machine learning teams.
+
+CORE TECHNICAL SKILLS
+
+Data Engineering: ETL Pipelines, Data Modeling, Data Warehousing, Batch Processing
+Big Data & Distributed: Spark (intro), Kafka (intro), Parallel Processing Concepts
+Cloud: AWS (S3, Lambda, EC2), Docker
+Pipelines & Orchestration: Apache Airflow
+Programming: Python (Pandas, PySpark basics), SQL
+Databases: PostgreSQL, MySQL
+DevOps Basics: CI/CD Concepts, Version Control (Git), Containerization
+Tools: Airflow, Docker, Tableau
+Other: Data Quality Checks, Incremental Load, Schema Design
+
+EXPERIENCE
+Data Engineer Intern — PT Digital Nusantara (2023)
+
+(disesuaikan dari pengalamanmu, tapi diarahkan ke DE)
+
+Assisted in building ETL pipelines to process and validate customer engagement data.
+
+Automated data workflows using Apache Airflow to ensure timely dataset refresh.
+
+Collaborated with engineering teams to optimize SQL queries and improve data integrity checks.
+
+Managed data extraction and transformation for downstream dashboards and analytics teams.
+
+Machine Learning Intern — AI Labs Indonesia (2022)
+
+(difokuskan ke data preparation & MLOps pipeline)
+
+Built preprocessing pipelines for ML input: missing value imputation, scaling, encoding.
+
+Helped maintain training-data versioning and reproducible experiment structure.
+
+Refactored data ingestion scripts to improve efficiency and reliability.
+
+PROJECTS
+Automated Data Pipeline for Sales Analytics
+
+Built a scheduled pipeline using Airflow + PostgreSQL.
+
+Implemented staging → transformation → production layers.
+
+Improved reporting timeliness by 70%.
+
+Data Lake Mini-Project (S3 + Python)
+
+Designed data lake structure for raw, curated, and consumption layers.
+
+Implemented ingestion scripts using AWS SDK & Python.
+
+Real-Time Dashboard Sync Pipeline
+
+Created incremental loading scripts for a BI dashboard.
+
+Ensured schema compatibility and validated data freshness.
+
+EDUCATION
+
+B.Sc. in Computer Science — Universitas Indonesia (2021–Present)
+Relevant Coursework: Database Systems, Distributed Systems, Cloud Computing, Algorithm Design
+
+CERTIFICATIONS
+
+AWS Cloud Practitioner
+
+Google Data Engineering Fundamentals (mock/target)
