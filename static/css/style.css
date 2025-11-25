@@ -112,3 +112,13 @@ body {
 .feedback-row ul {
     padding-left: 1.2rem;
 }
+
+/* === Sticky Navbar === */
+.sticky-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 999; /* biar selalu di depan elemen lain */
+    background-color: #ffffff; /* memastikan background solid */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(6px);
+}
