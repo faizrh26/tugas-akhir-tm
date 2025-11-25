@@ -1,154 +1,303 @@
 import re
+import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# 1: Keyword Extraction (TF-IDF)
+# ============================================================
+# SECTION HEADERS (ATS-style CV detection)
+# ============================================================
 
-def extract_keywords(text: str, top_k: int = 15):
+SECTION_HEADERS = {
+    "experience": [
+        "experience", "work experience", "professional experience",
+        "employment history", "career experience"
+    ],
+    "education": [
+        "education", "academic background", "academic history", "qualifications"
+    ],
+    "skills": [
+        "skills", "technical skills", "core skills", "skills & abilities"
+    ],
+    "projects": [
+        "projects", "project experience", "relevant projects"
+    ],
+    "certifications": [
+        "certifications", "certificates", "licenses", "licences"
+    ],
+    "summary": [
+        "summary", "profile", "professional summary", "about me"
+    ]
+}
+
+UNIVERSITY_KEYWORDS = [
+    "university", "universitas", "institute", "institut",
+    "polytechnic", "politeknik", "college", "school of",
+    "sekolah tinggi"
+]
+
+MONTHS = [
+    "jan", "feb", "mar", "apr", "may", "jun",
+    "jul", "aug", "sep", "oct", "nov", "dec"
+]
+
+
+# ============================================================
+# TF-IDF keywords (for word cloud / display only)
+# ============================================================
+
+def extract_keywords(text, top_k=20):
+    if not text:
+        return []
     vec = TfidfVectorizer(stop_words="english", max_features=2000)
-    tfidf_matrix = vec.fit_transform([text])
-    scores = tfidf_matrix.toarray()[0]
+    tfidf = vec.fit_transform([text]).toarray()[0]
     vocab = vec.get_feature_names_out()
-
-    scored_words = list(zip(vocab, scores))
-    scored_words.sort(key=lambda x: x[1], reverse=True)
-
-    return [w for w, s in scored_words[:top_k]]
+    pairs = list(zip(vocab, tfidf))
+    pairs.sort(key=lambda x: x[1], reverse=True)
+    return [w for w, s in pairs[:top_k]]
 
 
+# ============================================================
+# Normalize helper
+# ============================================================
 
-# Text Normalization
-
-def _normalize(text: str) -> str:
-    text = text.lower()
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
+def _norm(text):
+    return re.sub(r"\s+", " ", text.lower()).strip()
 
 
-# Skill, tools, and project/experience extraction (rule-based Information Extraction)
-def _collect_all_from_rubric(rubric):
+# ============================================================
+# SECTION PARSER — identify segments of CV
+# ============================================================
 
-    all_skills = set()
-    all_tools = set()
-    all_projects = set()
-    all_certs = set()
-    all_roles = set()
-    all_majors = set()
+def parse_sections(raw_text: str):
+    """
+    Pisahkan CV menjadi bagian-bagian ATS:
+    experience, education, skills, projects, certifications, summary, other.
+    """
+    lines = raw_text.splitlines()
+    sections = {k: "" for k in SECTION_HEADERS}
+    sections["other"] = ""
 
-    for role_name, cfg in rubric.items():
-        # skills
-        skills_cfg = cfg.get("skills", {})
-        all_skills.update(s.lower() for s in skills_cfg.get("must", []))
-        all_skills.update(s.lower() for s in skills_cfg.get("nice", []))
+    current = "other"
 
-        # tools
-        tools_cfg = cfg.get("tools", {})
-        all_tools.update(t.lower() for t in tools_cfg.get("core", []))
-        all_tools.update(t.lower() for t in tools_cfg.get("optional", []))
+    for line in lines:
+        clean = line.strip()
+        low = clean.lower()
 
-        # projects
-        sig_cfg = cfg.get("signals", {})
-        all_projects.update(p.lower() for p in sig_cfg.get("projects", []))
+        # cek apakah line ini header section
+        found = None
+        for sec, headers in SECTION_HEADERS.items():
+            for h in headers:
+                if low.startswith(h):
+                    found = sec
+                    break
+            if found:
+                break
 
-        # certs
-        all_certs.update(c.lower() for c in sig_cfg.get("certifications", []))
-
-        # experience roles
-        exp_cfg = cfg.get("experience", {})
-        all_roles.update(r.lower() for r in exp_cfg.get("roles", []))
-
-        # majors
-        edu_cfg = cfg.get("education", {})
-        all_majors.update(m.lower() for m in edu_cfg.get("preferred_majors", []))
-        all_majors.update(m.lower() for m in edu_cfg.get("optional_majors", []))
-
-    return {
-        "skills": sorted(all_skills),
-        "tools": sorted(all_tools),
-        "projects": sorted(all_projects),
-        "certs": sorted(all_certs),
-        "roles": sorted(all_roles),
-        "majors": sorted(all_majors),
-    }
-
-# Cari frasa / kata kunci sederhana di dalam teks normalized (lowercase).
-def _find_phrases(normalized_text: str, phrases):
-    found = set()
-    for ph in phrases:
-        ph = ph.strip().lower()
-        # skip kosong
-        if not ph:
+        # update current section
+        if found:
+            current = found
             continue
-        if ph in normalized_text:
-            found.add(ph)
-    return sorted(found)
 
-# mengambil tahun pengalaman dalam bidang
-    # TODO: parsing tahun pakai regex kalau mau lebih serius
-    # match ranges seperti "2020-2023", "2019 – 2021", dll
-def _extract_experience_years(raw_text: str):
-    text = _normalize(raw_text)
-    years = 0.0
+        # append line ke section aktif
+        sections[current] += clean + "\n"
 
-    # intern signal
-    if "intern" in text or "magang" in text:
-        years = max(years, 0.5)
+    return sections
 
-    # experience signal (minimal)
-    if any(role in text for role in ["data analyst", "data scientist", "data engineer"]):
-        years = max(years, 1.0)
 
-    return years
+# ============================================================
+# EXPERIENCE EXTRACTION (V4 mid-year assumption)
+# ============================================================
 
-# Mengambil jenjang pendidikan pelamar
-def _extract_education_level(raw_text: str):
-    text = _normalize(raw_text)
+def extract_experience_years(section_text):
+    """
+    Hitung estimasi pengalaman kerja dengan akurasi lebih tinggi.
+    - Menggunakan mid-year assumption jika hanya tahun
+    - Memahami rentang '2020–2022', '2020 – Present'
+    - Fallback: intern → 0.5 tahun, role → 1 tahun
+    """
 
-    if "s3" in text or "phd" in text or "doctor" in text:
+    text = section_text.lower()
+    current_year = datetime.datetime.now().year
+    total_years = 0.0
+
+    # 1) Rentang tahun lengkap
+    year_ranges = re.findall(
+        r"(20\d{2})\s*[-–]\s*(20\d{2}|present|current|now)",
+        text
+    )
+
+    for start_str, end_str in year_ranges:
+        start_year = int(start_str)
+
+        if end_str in ["present", "current", "now"]:
+            end_year = current_year
+        else:
+            end_year = int(end_str)
+
+        start_float = start_year + 0.5
+        end_float = end_year + 0.5
+
+        span = end_float - start_float
+        if span > 0:
+            total_years += min(span, 10.0)
+
+    # 2) SINGLE YEAR ONLY
+    single_years = re.findall(r"\b(20\d{2})\b", text)
+
+    used_years = set(start for start, _ in year_ranges)
+    used_years.update(end for _, end in year_ranges if end.isdigit())
+
+    for yr_str in single_years:
+        yr = int(yr_str)
+        if yr not in used_years:
+            if "intern" in text:
+                total_years += 0.5
+            elif any(r in text for r in ["data analyst", "data scientist", "data engineer"]):
+                total_years += 1.0
+            else:
+                total_years += 0.5
+
+    # 3) fallback total
+    if total_years == 0:
+        if "intern" in text:
+            return 0.5
+        if any(r in text for r in ["data analyst", "data scientist", "data engineer"]):
+            return 1.0
+
+    return round(total_years, 2)
+
+
+def extract_experience_roles(section_text, role_keywords):
+    roles = []
+    low = section_text.lower()
+
+    # roles dari rubric
+    for r in role_keywords:
+        if r in low:
+            roles.append(r)
+
+    # Job Title Capitalized
+    caps = re.findall(r"\b([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,3})\b", section_text)
+    for c in caps:
+        if any(r in c.lower() for r in role_keywords):
+            roles.append(c)
+
+    return list(sorted(set(roles)))
+
+
+# ============================================================
+# EDUCATION EXTRACTION
+# ============================================================
+
+def extract_education_level(section_text):
+    t = section_text.lower()
+
+    if any(k in t for k in ["phd", "doctor", "s3"]):
         return "S3"
-    if "s2" in text or "master" in text or "magister" in text:
+    if any(k in t for k in ["msc", "m.sc", "magister", "master", "s2"]):
         return "S2"
-    if "s1" in text or "bachelor" in text or "sarjana" in text:
+    if any(k in t for k in ["bsc", "b.sc", "bachelor", "sarjana", "s1"]):
         return "S1"
-    if "d3" in text or "diploma" in text:
+    if any(k in t for k in ["d3", "diploma", "associate"]):
         return "D3"
-    if "sma" in text or "high school" in text:
+    if any(k in t for k in ["sma", "smk", "high school"]):
         return "SMA"
+
     return "UNKNOWN"
 
-# Mengambil jurusan/prodi
-def _extract_education_majors(raw_text: str, all_majors):
-    text = _normalize(raw_text)
-    return _find_phrases(text, all_majors)
+
+def extract_education_institution(section_text):
+    inst = []
+    for line in section_text.splitlines():
+        low = line.lower()
+        if any(k in low for k in UNIVERSITY_KEYWORDS):
+            inst.append(line.strip())
+    return list(dict.fromkeys(inst))
 
 
+def extract_education_majors(section_text, major_keywords):
+    low = section_text.lower()
+    return sorted({m for m in major_keywords if m in low})
 
-# 2: Build candidate profile - membuat profil dari CV berdasarkan rubrik
-def build_profile(raw_text: str, cleaned_text: str, rubric: dict):
-    norm_raw = _normalize(raw_text)
-    norm_clean = _normalize(cleaned_text)
 
-    vocab = _collect_all_from_rubric(rubric)
+# ============================================================
+# SKILLS / TOOLS / PROJECTS / CERTIFICATIONS
+# ============================================================
 
-    # Skills, tools, projects, certs, roles, majors
-    skills_found = _find_phrases(norm_clean, vocab["skills"])
-    tools_found = _find_phrases(norm_clean, vocab["tools"])
-    projects_found = _find_phrases(norm_clean, vocab["projects"])
-    certs_found = _find_phrases(norm_raw, vocab["certs"])  # sering muncul di bagian sertif, tidak selalu ter-lemmatize
-    roles_found = _find_phrases(norm_raw, vocab["roles"])
-    majors_found = _extract_education_majors(raw_text, vocab["majors"])
+def extract_phrases_section(section_text, keywords):
+    low = section_text.lower()
+    return sorted({k for k in keywords if k in low})
 
-    experience_years = _extract_experience_years(raw_text)
-    education_level = _extract_education_level(raw_text)
+
+# ============================================================
+# NAME EXTRACTION
+# ============================================================
+
+def extract_name(raw_text):
+    for line in raw_text.splitlines():
+        clean = line.strip()
+        if not clean:
+            continue
+        parts = clean.split()
+        if 1 <= len(parts) <= 4 and all(p[0].isupper() for p in parts if p[0].isalpha()):
+            if not any(ch.isdigit() for ch in clean):
+                return clean.title()
+    return "Unknown"
+
+
+# ============================================================
+# KEYWORDS FROM RUBRIC (skills/tools/etc)
+# ============================================================
+
+def _collect_keywords_from_rubric(rubric):
+    skills, tools, projects, certs, roles, majors = set(), set(), set(), set(), set(), set()
+
+    for _, r in rubric.items():
+        skills.update(s.lower() for s in r["skills"]["must"])
+        skills.update(s.lower() for s in r["skills"]["nice"])
+
+        tools.update(t.lower() for t in r["tools"]["core"])
+        tools.update(t.lower() for t in r["tools"]["optional"])
+
+        projects.update(p.lower() for p in r["signals"]["projects"])
+        certs.update(c.lower() for c in r["signals"]["certifications"])
+
+        roles.update(rr.lower() for rr in r["experience"]["roles"])
+
+        majors.update(m.lower() for m in r["education"]["preferred_majors"])
+        majors.update(m.lower() for m in r["education"]["optional_majors"])
+
+    return {
+        "skills": list(skills),
+        "tools": list(tools),
+        "projects": list(projects),
+        "certs": list(certs),
+        "roles": list(roles),
+        "majors": list(majors),
+    }
+
+
+# ============================================================
+# BUILD PROFILE — main extraction output for scoring
+# ============================================================
+
+def build_profile(raw_text, cleaned_text, rubric):
+    sections = parse_sections(raw_text)
+    vocab = _collect_keywords_from_rubric(rubric)
 
     profile = {
-        "skills": skills_found,
-        "tools": tools_found,
-        "projects": projects_found,
-        "certifications": certs_found,
-        "experience_years": experience_years,
-        "experience_roles": roles_found,
-        "education_majors": majors_found,
-        "education_level": education_level,
+        "name": extract_name(raw_text),
+
+        "skills": extract_phrases_section(sections["skills"], vocab["skills"]),
+        "tools": extract_phrases_section(sections["skills"], vocab["tools"]),
+        "projects": extract_phrases_section(sections["projects"], vocab["projects"]),
+        "certifications": extract_phrases_section(sections["certifications"], vocab["certs"]),
+
+        "experience_years": extract_experience_years(sections["experience"]),
+        "experience_roles": extract_experience_roles(sections["experience"], vocab["roles"]),
+
+        "education_level": extract_education_level(sections["education"]),
+        "education_majors": extract_education_majors(sections["education"], vocab["majors"]),
+        "education_institution": extract_education_institution(sections["education"]),
     }
 
     return profile

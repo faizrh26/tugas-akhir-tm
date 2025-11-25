@@ -4,7 +4,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 
-from pipeline import process_cv  
+from pipeline import process_cv
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -38,24 +38,24 @@ def index():
             flash("Unsupported file type. Allowed: .pdf, .docx, .txt")
             return redirect(request.url)
 
-        # Simpan file
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(filepath)
 
-        # ==== PROSES CV DI SINI (HARUS DI DALAM POST) ====
+        # Proses CV
         result = process_cv(filepath)
 
         return render_template(
             "result.html",
             best_role=result["best_role"],
             score=result["score_result"],
-            keywords=result["keywords"],
             profile=result["profile"],
+            keywords=result["keywords"],
+            feedback=result["feedback"],   # ⬅️ baru
             filename=filename,
         )
 
-    # ==== GET REQUEST → halaman upload ====
+    # GET: tampilkan halaman upload
     return render_template("index.html")
 
 

@@ -2,8 +2,9 @@ import input_handler
 import prepocessing
 import extraction
 import scorer
+from feedback import build_feedback
 
-RUBRIC_PATH = "data/rubrik_penilaian.json" 
+RUBRIC_PATH = "data/rubrik_penilaian.json"
 
 
 def process_cv(file_path: str):
@@ -26,6 +27,9 @@ def process_cv(file_path: str):
     # Optional: keywords for UI / debugging
     keywords = extraction.extract_keywords(cleaned_text)
 
+    # Build feedback (pakai best_role dari sini)
+    feedback = build_feedback(best_role, score_result, profile, rubric)
+
     return {
         "best_role": best_role,
         "score_result": score_result,
@@ -33,12 +37,5 @@ def process_cv(file_path: str):
         "keywords": keywords,
         "raw_text": cv_text,
         "cleaned_text": cleaned_text,
+        "feedback": feedback,
     }
-
-
-if __name__ == "__main__":
-    # contoh manual
-    result = process_cv("data/user_cv.txt")
-    print("===== BEST ROLE =====")
-    print(result["best_role"])
-    print("Scores:", result["score_result"])

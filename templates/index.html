@@ -2,29 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CV Role Matcher</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Upload CV - CV Role Advisor</title>
+
+    <!-- Bootstrap -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    >
+
+    <!-- Custom CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
 <body>
-<div class="container">
-    <h1>CV Role Matcher</h1>
-    <p>Upload CV kamu untuk melihat kecocokan dengan Data Analyst, Data Scientist, dan Data Engineer.</p>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="flash">
-          {% for msg in messages %}
-            <p>{{ msg }}</p>
-          {% endfor %}
+<div class="container py-4">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/">CV Role Advisor</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" aria-current="page" href="/">Upload</a>
+                <a class="nav-link" href="#feedback-section">Feedback</a>
+            </div>
         </div>
-      {% endif %}
-    {% endwith %}
+    </nav>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label for="cvfile">Pilih file CV (.pdf, .docx, .txt):</label><br>
-        <input type="file" id="cvfile" name="cvfile" required><br><br>
-        <button type="submit">Proses CV</button>
-    </form>
+    <!-- UPLOAD CARD -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card shadow-sm border-0 p-4 card-panel">
+
+                <h4 class="text-center mb-3 fw-bold">Upload CV untuk Analisis</h4>
+                <p class="text-muted text-center small">
+                    Format yang diterima: <strong>.pdf, .docx, .txt</strong>
+                </p>
+
+                <!-- Flash messages -->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-warning">
+                            {{ messages[0] }}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- FORM -->
+                <form method="POST" enctype="multipart/form-data">
+
+                    <label class="form-label fw-semibold">Pilih file CV:</label>
+                    <input
+                        class="form-control form-control-lg mb-3"
+                        type="file"
+                        id="cvfile"
+                        name="cvfile"
+                        accept=".pdf, .docx, .txt"
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100 py-2 fw-semibold"
+                    >
+                        Analisis CV
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
 </div>
+
 </body>
 </html>
